@@ -1,15 +1,19 @@
 import requests
+import bs4
 
 def scan():
     site = input("Provide URL: ")
-    function_choice = input("Enter the function to run (SQLscn or VERxss): ")
+    function_choice = input("Enter the function to run (SQLscn or VERxss or CSRF): ")
     if function_choice == "SQLscn" or "SQL" or "sqlscan":
         SQLscn(site)
     elif function_choice == "VERxss" or "XSS" or "xssscan":
         VERxss(site)
-    elif function_choice == "SQLscn" & "VERxss":
+    elif function_choice == "CSRF" or "csrf":
+        csrf(site)
+    elif function_choice == "SQLscn" & "VERxss" & "csrf":
         SQLscn(site)
         VERxss(site)
+        csrf(site)
     else:
         print("Invalid function choice!")
     print("Scanning: {site}")
@@ -43,5 +47,15 @@ def VERxss(site):
         if payload in response.text:
             print("[XSS] Potential vulnerability: '{modified_url}'")
 
+def csrf(site):
+    response = requests.get(site)
+    html_content = response.content
+    soup = BeautifulSoup(html_content, 'html.parser')
+    forms = soup.find_all('form')
+    for form in forms:
+        if not form.find('input', {'name': 'csrf_token'}):
+            return True
+    # No CSRF vulnerability found
+    return False
 scan()
 
