@@ -1,3 +1,5 @@
+#Author: miguellpz9-ipv8
+#https://github.com/miguellpz9-ipv8
 import requests
 import bs4
 
